@@ -1,0 +1,34 @@
+on:
+    push:
+        branches:
+            - master
+jobs: 
+  build: 
+    runs-on: windows-latest
+    steps: 
+    - uses: actions/checkout@v2
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.12.9'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw73'
+        dir: '${{ github.workspace }}/example/'
+        install-deps: 'true'
+        modules: 'qtcharts qtwebengine'
+        mirror: 'http://mirrors.ocf.berkeley.edu/qt/'
+        cached: 'false'
+        aqtversion: '==0.9'
+        py7zrversion: '==0.7'
+        extra: '--external 7z'
+
+    - name: Build Binary
+      run: |
+        ls
+        & .\windows_build.bat
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: win64
+        path: ./windows_release
